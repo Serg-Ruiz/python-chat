@@ -11,7 +11,7 @@ except socket.error as err:
 port = 1223 
   
 try: 
-    host_ip = '50.76.70.62' 
+    host_ip = '50.76.70.60'
 except socket.gaierror: 
  
     # this means could not resolve the host 
