@@ -2,7 +2,7 @@ import socket # for socket
 import sys 
  
 try: 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     print ("Socket successfully created")
 except socket.error as err: 
     print ("socket creation failed with error %s" %(err))
@@ -19,6 +19,16 @@ except socket.gaierror:
     sys.exit() 
  
 # connecting to the server 
-s.connect((host_ip, port)) 
- 
-print ("the socket has successfully connected to server") 
+client_socket.connect((host_ip, port)) 
+
+print ("the socket has successfully connected to server")
+
+while True:
+
+    user_input = input("Enter something: ")
+    client_socket.sendall(user_input.encode('utf-8'))
+
+    if user_input == 'bye':
+        break
+
+
