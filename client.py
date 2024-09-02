@@ -1,34 +1,60 @@
-import socket # for socket 
-import sys 
- 
-try: 
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-    print ("Socket successfully created")
-except socket.error as err: 
-    print ("socket creation failed with error %s" %(err))
- 
-# default port for socket 
-port = 1223 
-  
-try: 
+import socket
+import sys
+import threading
+
+def receive_messages(client_socket):
+    while True:
+        try:
+            received_msg = client_socket.recv(1024).decode()
+            if received_msg:
+                print(f"\n{received_msg}")  # Ensure messages are on a new line
+            else:
+                # Connection closed
+                print("\nConnection closed by server")
+                break
+        except Exception as e:
+            print(f"\nError receiving message: {e}")
+            break
+    client_socket.close()
+
+def main():
+    try:
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        print("Socket successfully created")
+    except socket.error as err:
+        print(f"Socket creation failed with error {err}")
+        sys.exit()
+
+    port = 1223
     host_ip = '50.76.70.60'
-except socket.gaierror: 
- 
-    # this means could not resolve the host 
-    print ("there was an error resolving the host")
-    sys.exit() 
- 
-# connecting to the server 
-client_socket.connect((host_ip, port)) 
+    
+    try:
+        client_socket.connect((host_ip, port))
+        print("The socket has successfully connected to the server")
+    except socket.error as err:
+        print(f"Error connecting to the server: {err}")
+        sys.exit()
 
-print ("the socket has successfully connected to server")
+    # Start a thread to listen for incoming messages
+    threading.Thread(target=receive_messages, args=(client_socket,), daemon=True).start()
 
-while True:
+    while True:
+        try:
+            user_input = input(">>")
+            if user_input.lower() == 'bye':
+                client_socket.sendall(user_input.encode('utf-8'))
+                print("Disconnecting...")
+                break
+            client_socket.sendall(user_input.encode('utf-8'))
+        except KeyboardInterrupt:
+            print("\nInterrupt received, disconnecting...")
+            break
+        except Exception as e:
+            print(f"\nError sending message: {e}")
+            break
 
-    user_input = input("Enter something: ")
-    client_socket.sendall(user_input.encode('utf-8'))
+    client_socket.close()
 
-    if user_input == 'bye':
-        break
-
+if __name__ == "__main__":
+    main()
 
