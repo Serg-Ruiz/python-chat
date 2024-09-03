@@ -46,7 +46,7 @@ def main():
     print("Socket successfully created")
     
     #port that the service will ran on
-    port = 1223
+    port = 
     s.bind(('', port))
     print(f"Socket binded to {port}")
     
