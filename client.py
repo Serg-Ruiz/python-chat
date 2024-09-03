@@ -29,8 +29,8 @@ def main():
         print(f"Socket creation failed with error {err}")
         sys.exit()
     #port that the service will be run on and ip of the server
-    port = 1223
-    host_ip = '50.76.70.60'
+    port = 
+    host_ip = ''
     #connect to socket on server if it does not suceed throws out error
     try:
         client_socket.connect((host_ip, port))
